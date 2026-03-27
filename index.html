@@ -1,27 +1,570 @@
-<h1>TERMS OF SERVICE</h1>
-<p>By using this application, you agree to comply with TikTok Community Guidelines and Terms of Service. This tool is designed strictly for managing and automating men apparel affiliate content. We are not responsible for any misuse of the account or violations of TikTok policies committed by the user. Usage of this tool is at your own risk.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARKVLT — Men's Fashion Curator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-<h1>PRIVACY POLICY</h1>
-<p><strong>Last updated March 27 2026</strong></p>
+  :root {
+    --black:   #0a0906;
+    --dark:    #111008;
+    --earth:   #1c1810;
+    --gold:    #c9a96e;
+    --gold2:   #a07840;
+    --linen:   #e8e0d0;
+    --muted:   #8a8070;
+    --border:  rgba(201,169,110,0.18);
+    --border2: rgba(232,224,208,0.08);
+  }
 
-<p>This Privacy Policy describes how your personal information is collected used and shared when you use our application for TikTok content management.</p>
+  html { scroll-behavior: smooth; }
 
-<h2>1. INFORMATION WE COLLECT</h2>
-<p>When you connect your TikTok account we access basic profile information and video posting capabilities via TikTok Official API. We do not store your login credentials.</p>
+  body {
+    background: var(--black);
+    color: var(--linen);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-<h2>2. HOW WE USE YOUR INFORMATION</h2>
-<p>We use the information collected to</p>
-<ul>
-  <li>Authenticate your identity via TikTok Login</li>
-  <li>Allow the automated uploading of fashion related video content to your profile</li>
-  <li>Manage content scheduling for affiliate marketing purposes</li>
-</ul>
+  /* Custom cursor */
+  .cursor {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed; width: 32px; height: 32px;
+    border: 1px solid var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.25s cubic-bezier(.16,1,.3,1), width 0.3s, height 0.3s, opacity 0.2s;
+    opacity: 0.5;
+  }
 
-<h2>3. DATA SECURITY</h2>
-<p>We value your trust in providing us your Personal Information thus we are striving to use commercially acceptable means of protecting it. No method of transmission over the internet is 100 percent secure and reliable.</p>
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 1000;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.028;
+    pointer-events: none;
+  }
 
-<h2>4. THIRD PARTY SERVICES</h2>
-<p>We use TikTok official API for all interactions. Your data is subject to TikTok Privacy Policy and Terms of Service.</p>
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 48px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    border-color: var(--border);
+    background: rgba(10,9,6,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--linen); }
 
-<h2>5. CONTACT US</h2>
-<p>If you have any questions or suggestions about our Privacy Policy do not hesitate to contact us at claytonadrianot@gmail.com</p>
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Animated background lines */
+  .hero-lines {
+    position: absolute; inset: 0; overflow: hidden; z-index: 0;
+  }
+  .hero-lines span {
+    position: absolute; top: 0; bottom: 0; width: 1px;
+    background: var(--border2);
+    animation: lineReveal 2s ease forwards;
+    animation-delay: var(--d);
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+  @keyframes lineReveal {
+    to { transform: scaleY(1); }
+  }
+
+  .hero-eyebrow {
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 1s 0.3s forwards;
+    position: relative; z-index: 1;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(72px, 12vw, 160px);
+    font-weight: 300; line-height: 0.88;
+    letter-spacing: -2px;
+    color: var(--linen);
+    opacity: 0; animation: fadeUp 1.2s 0.5s forwards;
+    position: relative; z-index: 1;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-sub {
+    margin-top: 40px;
+    display: flex; align-items: center; gap: 48px;
+    opacity: 0; animation: fadeUp 1s 0.9s forwards;
+    position: relative; z-index: 1;
+  }
+  .hero-sub p {
+    font-size: 12px; color: var(--muted); letter-spacing: 1px;
+    line-height: 1.8; max-width: 320px;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 14px 32px;
+    border: 1px solid var(--gold);
+    color: var(--gold); font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    text-decoration: none; white-space: nowrap;
+    transition: background 0.3s, color 0.3s;
+    cursor: none;
+  }
+  .hero-cta:hover { background: var(--gold); color: var(--black); }
+  .hero-cta svg { width: 14px; height: 14px; transition: transform 0.3s; }
+  .hero-cta:hover svg { transform: translateX(4px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 40px; right: 48px; z-index: 1;
+    writing-mode: vertical-rl; font-size: 10px; letter-spacing: 3px;
+    color: var(--muted); text-transform: uppercase;
+    opacity: 0; animation: fadeIn 1s 1.5s forwards;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-scroll::after {
+    content: ''; display: block; width: 1px; height: 60px;
+    background: var(--gold); animation: lineGrow 1s 2s forwards;
+    transform-origin: top; transform: scaleY(0);
+  }
+  @keyframes lineGrow { to { transform: scaleY(1); } }
+
+  /* ── ABOUT ── */
+  .about {
+    padding: 140px 48px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+    border-top: 1px solid var(--border);
+  }
+  .about-label {
+    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px;
+  }
+  .about-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300; line-height: 1.1;
+    color: var(--linen);
+  }
+  .about-heading em { font-style: italic; color: var(--gold); }
+  .about-body { font-size: 12px; color: var(--muted); line-height: 2; margin-top: 28px; }
+  .about-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--black);
+    padding: 36px 28px;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; color: var(--gold); line-height: 1;
+  }
+  .stat-label { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; text-transform: uppercase; }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    padding: 120px 48px;
+    border-top: 1px solid var(--border);
+  }
+  .section-header {
+    display: flex; align-items: baseline; gap: 24px;
+    margin-bottom: 80px;
+  }
+  .section-label { font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 3.5vw, 48px);
+    font-weight: 300; color: var(--linen);
+  }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .step {
+    background: var(--black); padding: 48px 36px;
+    position: relative; overflow: hidden;
+    transition: background 0.3s;
+  }
+  .step:hover { background: var(--earth); }
+  .step::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--gold); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .step:hover::before { transform: scaleX(1); }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px; color: var(--border); line-height: 1;
+    position: absolute; top: 24px; right: 24px;
+  }
+  .step-icon { font-size: 28px; margin-bottom: 24px; }
+  .step-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--linen); margin-bottom: 14px; }
+  .step-body { font-size: 12px; color: var(--muted); line-height: 1.9; }
+
+  /* ── CONNECT / LOGIN ── */
+  .connect {
+    padding: 120px 48px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .connect-label { font-size: 10px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 24px; }
+  .connect-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 300; color: var(--linen); line-height: 0.95;
+    margin-bottom: 20px;
+  }
+  .connect-title em { font-style: italic; color: var(--gold); }
+  .connect-sub { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-bottom: 56px; max-width: 400px; line-height: 1.8; }
+
+  .tiktok-btn {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 18px 48px;
+    background: var(--gold); color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    border: none; cursor: none;
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    position: relative; overflow: hidden;
+  }
+  .tiktok-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+  }
+  .tiktok-btn:hover::before { transform: translateX(0); }
+  .tiktok-btn:hover { transform: translateY(-2px); }
+  .tiktok-btn svg { width: 18px; height: 18px; }
+
+  .connect-note {
+    margin-top: 20px; font-size: 10px; color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* ── PRIVACY / TERMS ── */
+  .legal {
+    padding: 80px 48px;
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  }
+  .legal-block h3 {
+    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px;
+  }
+  .legal-block p { font-size: 12px; color: var(--muted); line-height: 2; }
+  .legal-block a { color: var(--linen); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 6px; color: var(--gold); }
+  .footer-copy { font-size: 10px; color: var(--muted); letter-spacing: 2px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(10,9,6,0.92); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--earth); border: 1px solid var(--border);
+    padding: 56px; max-width: 480px; width: 90%;
+    transform: translateY(20px);
+    transition: transform 0.3s;
+    position: relative;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    background: none; border: none; color: var(--muted);
+    font-size: 20px; cursor: none; line-height: 1;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--linen); }
+  .modal-label { font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--linen); margin-bottom: 16px; }
+  .modal-body { font-size: 12px; color: var(--muted); line-height: 2; margin-bottom: 36px; }
+  .modal-actions { display: flex; flex-direction: column; gap: 12px; }
+  .modal-tiktok {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 16px; background: var(--gold); color: var(--black);
+    border: none; font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: none; transition: background 0.2s; text-decoration: none;
+    width: 100%;
+  }
+  .modal-tiktok:hover { background: #d4b47e; }
+  .modal-cancel {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); padding: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    cursor: none; transition: border-color 0.2s, color 0.2s;
+  }
+  .modal-cancel:hover { border-color: var(--muted); color: var(--linen); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  /* scroll reveal */
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s, transform 0.8s; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 768px) {
+    nav { padding: 24px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 0 24px 60px; }
+    .about { grid-template-columns: 1fr; padding: 80px 24px; }
+    .how, .connect, .legal { padding: 80px 24px; }
+    .steps { grid-template-columns: 1fr; }
+    .legal { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">ARKVLT</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#connect">Connect</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-lines" aria-hidden="true">
+    <span style="left:20%; --d:0.2s"></span>
+    <span style="left:40%; --d:0.5s"></span>
+    <span style="left:60%; --d:0.8s"></span>
+    <span style="left:80%; --d:1.1s"></span>
+  </div>
+  <p class="hero-eyebrow">Men's Fashion Catalog — @arkvlt</p>
+  <h1 class="hero-title">
+    The<br><em>Vault</em><br>For Men<br>Who Dress<br>With Intent.
+  </h1>
+  <div class="hero-sub">
+    <p>A private content management tool for curating and publishing daily men's fashion affiliate content on TikTok.</p>
+    <a href="#connect" class="hero-cta">
+      Connect Account
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="reveal">
+    <p class="about-label">About ARKVLT Manager</p>
+    <h2 class="about-heading">A curator's tool.<br>Built for <em>precision.</em></h2>
+    <p class="about-body">
+      ARKVLT Manager is a private, single-creator content scheduling tool designed exclusively for the @arkvlt TikTok account. It handles the end-to-end workflow of men's fashion affiliate content — from script generation to scheduled publishing — so every post hits with intention.
+      <br><br>
+      This is not a SaaS platform. It is a personal automation tool for one creator, one account.
+    </p>
+  </div>
+  <div class="about-stats reveal">
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Videos / day</div></div>
+    <div class="stat"><div class="stat-num">15s</div><div class="stat-label">Per video</div></div>
+    <div class="stat"><div class="stat-num">1</div><div class="stat-label">Creator account</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-label">User data stored</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-header reveal">
+    <span class="section-label">Process</span>
+    <h2 class="section-title">How it works</h2>
+  </div>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">◈</div>
+      <div class="step-title">Authenticate</div>
+      <div class="step-body">Creator authenticates their own TikTok account via official OAuth 2.0. No passwords stored. Single-account access only.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">◉</div>
+      <div class="step-title">Produce</div>
+      <div class="step-body">Daily videos are generated locally — scripted, voiced, graded, and compiled into 15-second vertical catalog content.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">◎</div>
+      <div class="step-title">Publish</div>
+      <div class="step-body">Completed videos are uploaded and published to the creator's profile via TikTok Content Posting API on a scheduled cadence.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section class="connect" id="connect">
+  <p class="connect-label reveal">Creator Access</p>
+  <h2 class="connect-title reveal">Connect<br><em>your account.</em></h2>
+  <p class="connect-sub reveal">Authorize ARKVLT Manager to manage content publishing for your TikTok profile. Only the account owner can authenticate.</p>
+  <a href="#" class="tiktok-btn reveal" id="connectBtn" onclick="openModal(event)">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.85 4.85 0 01-1.02-.09z"/></svg>
+    Login with TikTok
+  </a>
+  <p class="connect-note reveal">Uses TikTok official OAuth 2.0 — secure, revocable at any time</p>
+</section>
+
+<!-- LEGAL -->
+<section class="legal">
+  <div class="legal-block reveal">
+    <h3>Privacy Policy</h3>
+    <p>
+      ARKVLT Manager does not collect, store, or share any personal data from TikTok users. Authentication is handled entirely through TikTok's official OAuth 2.0 system. The only data accessed is the creator's own account profile (open ID, display name) for authentication verification purposes.<br><br>
+      No third-party data collection. No analytics. No cookies beyond session management. Access tokens are stored locally on the creator's own device only and are never transmitted to any third-party server.<br><br>
+      For questions: <a href="mailto:arkvlt.manager@gmail.com">arkvlt.manager@gmail.com</a>
+    </p>
+  </div>
+  <div class="legal-block reveal">
+    <h3>Terms of Service</h3>
+    <p>
+      ARKVLT Manager is a private, single-user content management tool. Use is restricted to the authorized creator account (@arkvlt) only. This tool may not be redistributed, resold, or used to manage accounts other than the authorized creator's own TikTok profile.<br><br>
+      All content published through this tool remains the sole responsibility of the creator. ARKVLT Manager does not guarantee content performance, reach, or monetization outcomes.<br><br>
+      This tool operates in full compliance with TikTok's Terms of Service, Developer Terms, and Community Guidelines.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ARKVLT</div>
+  <p class="footer-copy">© 2025 ARKVLT Manager — Private Creator Tool</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <p class="modal-label">Authorization</p>
+    <h3 class="modal-title">Connect TikTok</h3>
+    <p class="modal-body">
+      You will be redirected to TikTok to authorize ARKVLT Manager to publish content on your behalf. This grants access to:<br><br>
+      · Read your basic profile info<br>
+      · Upload videos to your account<br>
+      · Publish videos directly to your profile<br><br>
+      You can revoke this access at any time from your TikTok settings.
+    </p>
+    <div class="modal-actions">
+      <a href="TIKTOK_OAUTH_URL_HERE" class="modal-tiktok" id="oauthBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.85 4.85 0 01-1.02-.09z"/></svg>
+        Authorize with TikTok
+      </a>
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width = '48px'; ring.style.height = '48px'; ring.style.opacity = '0.8'; });
+  el.addEventListener('mouseleave', () => { ring.style.width = '32px'; ring.style.height = '32px'; ring.style.opacity = '0.5'; });
+});
+
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Modal
+function openModal(e) {
+  e.preventDefault();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// TikTok OAuth URL — ganti CLIENT_KEY dengan app client key lu dari TikTok Developer
+const CLIENT_KEY = 'YOUR_TIKTOK_CLIENT_KEY';
+const REDIRECT_URI = encodeURIComponent('https://claytonandriano06-lgtm.github.io/ARKVLT/callback');
+const STATE = Math.random().toString(36).substring(2);
+const SCOPE = encodeURIComponent('user.info.basic,video.upload,video.publish');
+const oauthUrl = `https://www.tiktok.com/v2/auth/authorize?client_key=${CLIENT_KEY}&scope=${SCOPE}&response_type=code&redirect_uri=${REDIRECT_URI}&state=${STATE}`;
+document.getElementById('oauthBtn').href = oauthUrl;
+</script>
+</body>
+</html>
